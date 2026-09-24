@@ -1,0 +1,34 @@
+{
+  "name": "plancia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Plancia — operations coordination for Team Leaders, Floor Managers, CSDMs and COO. Standalone, with a versioned API (ops.v1) for Nodo.",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c blue,green \"node --watch-path=server --import tsx server/main.ts\" \"vite\"",
+    "build": "vite build",
+    "start": "tsx server/main.ts",
+    "seed": "tsx server/seed-cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.1",
+    "hono": "^4.13.9",
+    "lucide-react": "^1.48.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.1"
+  }
+}
