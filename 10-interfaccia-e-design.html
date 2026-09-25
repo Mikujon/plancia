@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nodo &middot; 10 &middot; Interfaccia e design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>:root{--bg:#FAFAF9;--pane:#FFFFFF;--ink:#14161A;--ink2:#4A5057;--ink3:#767E88;--line:#E6E4E0;--line2:#F0EEEB;--acc:#00876B;--accbg:#E6F2EF;--warn:#A8710C;--warnbg:#FBF2E0;--bad:#AE3F2E;--badbg:#FBEAE6;--info:#2C5FA8;--infobg:#E8EFF9;--neu:#6B7280;--neubg:#F1F2F4;--r:14px;--r2:10px}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101214;--pane:#181B1E;--ink:#F2F1EF;--ink2:#B5BBC2;--ink3:#868E97;--line:#2A2E33;--line2:#22262A;--accbg:#0E2A24;--warnbg:#2C2410;--badbg:#2E1714;--infobg:#12203A;--neubg:#22262A;--acc:#3FB89A;--warn:#D9A03C;--bad:#E07362;--info:#6C9AE0}}:root[data-theme="dark"]{--bg:#101214;--pane:#181B1E;--ink:#F2F1EF;--ink2:#B5BBC2;--ink3:#868E97;--line:#2A2E33;--line2:#22262A;--accbg:#0E2A24;--warnbg:#2C2410;--badbg:#2E1714;--infobg:#12203A;--neubg:#22262A;--acc:#3FB89A;--warn:#D9A03C;--bad:#E07362;--info:#6C9AE0}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}.wrap{display:grid;grid-template-columns:262px 1fr;max-width:1420px;margin:0 auto;gap:0;align-items:start}.nav{position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 14px 60px;border-right:1px solid var(--line);background:var(--bg)}.nav::-webkit-scrollbar{width:7px}.nav::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}.brand{display:flex;align-items:center;gap:9px;padding:0 8px 14px;margin-bottom:8px;border-bottom:1px solid var(--line)}.dot{width:19px;height:19px;border-radius:6px;background:var(--acc);flex:none;position:relative}.dot::after{content:"";position:absolute;inset:6px;border-radius:2px;background:var(--bg)}.brand b{font-size:15px;font-weight:800;letter-spacing:-.2px}.brand span{font-size:10.5px;color:var(--ink3);display:block;font-weight:600;letter-spacing:.3px;text-transform:uppercase}.nsec{font-size:10px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3);padding:16px 8px 6px}.nav a{display:block;padding:5px 9px;border-radius:7px;color:var(--ink2);text-decoration:none;font-size:13px;font-weight:500;transition:.13s}.nav a:hover{background:var(--line2);color:var(--ink)}.nav a.sub{padding-left:20px;font-size:12.4px;color:var(--ink3)}.nav a.ext::after{content:"↗";font-size:9px;opacity:.5;margin-left:4px}
+.nav a.on{background:var(--accbg);color:var(--acc);font-weight:700}main{padding:38px 46px 140px;min-width:0;max-width:1000px}h1{font-size:38px;line-height:1.1;letter-spacing:-1.1px;font-weight:800;margin:0 0 10px}h2{font-size:25px;letter-spacing:-.6px;font-weight:800;margin:0 0 6px;scroll-margin-top:24px}h3{font-size:17.5px;letter-spacing:-.25px;font-weight:700;margin:30px 0 8px;scroll-margin-top:24px}h4{font-size:14.5px;font-weight:700;margin:20px 0 6px;letter-spacing:-.1px}p{margin:0 0 12px;color:var(--ink2)}b,strong{color:var(--ink);font-weight:700}a{color:var(--acc)}code{font-family:'JetBrains Mono',monospace;font-size:.86em;background:var(--neubg);padding:1.5px 5px;border-radius:5px;color:var(--ink)}hr{border:0;border-top:1px solid var(--line);margin:36px 0}section{margin-bottom:46px;scroll-margin-top:20px}.lead{font-size:16.5px;color:var(--ink2);line-height:1.6;margin-bottom:18px}.kick{font-size:10.5px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--acc);margin-bottom:7px}.card{background:var(--pane);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:14px 0}.card.q{border-left:3px solid var(--acc)}.card.w{border-left:3px solid var(--warn);background:var(--warnbg)}.card.b{border-left:3px solid var(--bad);background:var(--badbg)}.card.i{border-left:3px solid var(--info);background:var(--infobg)}.card h4:first-child,.card h3:first-child{margin-top:0}.card p:last-child{margin-bottom:0}.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.2px}th{text-align:left;font-weight:700;font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3);padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:bottom}td{padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink2)}td b{color:var(--ink)}tr:last-child td{border-bottom:0}.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r2);background:var(--pane);margin:14px 0}.tw table{margin:0}.tw th{padding:10px 12px}.tw td{padding:10px 12px}.mono{font-family:'JetBrains Mono',monospace;font-size:12px}.p{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.3px;padding:2px 7px;border-radius:5px;background:var(--neubg);color:var(--ink2);white-space:nowrap}.p.s{background:var(--infobg);color:var(--info)}.p.r{background:var(--accbg);color:var(--acc)}.p.a{background:var(--warnbg);color:var(--warn)}.p.x{background:var(--badbg);color:var(--bad)}.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;padding:2px 6px;border-radius:5px;background:var(--neubg);color:var(--ink3);margin-right:5px}.us{border:1px solid var(--line);border-radius:var(--r2);background:var(--pane);padding:14px 16px;margin:10px 0}.us .id{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--acc);letter-spacing:.2px}.us .t{font-weight:700;font-size:14.5px;margin:3px 0 8px;color:var(--ink)}.ac{border-top:1px dashed var(--line);padding-top:9px;margin-top:9px;font-size:12.8px}.ac div{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:2.5px 0;color:var(--ink2)}.ac div span:first-child{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;padding-top:2px}.steps{margin:14px 0;counter-reset:s}.step{position:relative;padding:0 0 16px 40px;border-left:2px solid var(--line);margin-left:11px}.step:last-child{border-left-color:transparent;padding-bottom:0}.step::before{counter-increment:s;content:counter(s);position:absolute;left:-12px;top:0;width:22px;height:22px;border-radius:50%;background:var(--pane);border:1.5px solid var(--line);color:var(--ink3);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center}.step.sys::before{background:var(--infobg);border-color:var(--info);color:var(--info)}.step.usr::before{background:var(--accbg);border-color:var(--acc);color:var(--acc)}.step.err::before{background:var(--badbg);border-color:var(--bad);color:var(--bad)}.step .sh{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:2px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.step .sb{font-size:13.2px;color:var(--ink2)}.step .meta{font-size:11.5px;color:var(--ink3);margin-top:4px;font-family:'JetBrains Mono',monospace}.role{border:1px solid var(--line);border-radius:var(--r);background:var(--pane);margin:20px 0;overflow:hidden;scroll-margin-top:20px}.rhead{padding:15px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--line2),transparent)}.rhead .rn{font-size:19px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rhead .rd{font-size:13px;color:var(--ink3);margin-top:3px}.rbody{padding:4px 20px 18px}.rbody h4{font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3);font-weight:800;margin:18px 0 6px}.kv{display:grid;grid-template-columns:130px 1fr;gap:4px 12px;font-size:13px;margin:8px 0}.kv dt{color:var(--ink3);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;padding-top:2px}.kv dd{margin:0;color:var(--ink2)}ul,ol{margin:6px 0 12px;padding-left:20px;color:var(--ink2)}li{margin:3px 0}li::marker{color:var(--ink3)}.no li::marker{color:var(--bad)}.yes li::marker{color:var(--acc)}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.4px;color:var(--ink2);padding:12px 0}.legend div{display:flex;align-items:center;gap:6px}.meta-doc{display:flex;gap:18px;flex-wrap:wrap;font-size:12.2px;color:var(--ink3);padding:14px 0 0;border-top:1px solid var(--line);margin-top:16px;font-family:'JetBrains Mono',monospace}@media(max-width:1000px){.wrap{grid-template-columns:1fr}.nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:16px}main{padding:24px 16px 80px}h1{font-size:29px}}@media print{.nav{display:none}.wrap{grid-template-columns:1fr}main{padding:0;max-width:none}.card,.role,.us{break-inside:avoid}}.ic{display:inline-block;width:1em;height:1em;vertical-align:-.14em;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}h2 .ic{width:23px;height:23px;color:var(--acc);margin-right:9px;vertical-align:-.16em}.rhead .rn .ic{width:21px;height:21px;color:var(--acc)}.rbody h4 .ic{width:13px;height:13px;margin-right:6px;color:var(--acc);vertical-align:-.08em}.p .ic{width:10px;height:10px;margin-right:3px;stroke-width:2.1}.legend .ic{width:13px;height:13px;color:var(--ink3)}.us .t .ic{width:14px;height:14px;color:var(--acc);margin-right:6px}.card>b:first-child .ic,.card h4 .ic{width:14px;height:14px;margin-right:6px;color:var(--acc)}.ebar{position:fixed;right:18px;bottom:18px;z-index:70;display:flex;align-items:center;gap:6px;background:var(--pane);border:1px solid var(--line);border-radius:13px;padding:6px;box-shadow:0 8px 28px rgba(0,0,0,.13)}.ebtn{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--ink2);font:600 12.5px Manrope,sans-serif;padding:7px 11px;border-radius:9px;cursor:pointer;transition:.13s;white-space:nowrap}.ebtn:hover{background:var(--line2);color:var(--ink)}.ebtn.on{background:var(--acc);color:#fff}.ebtn.on:hover{background:var(--acc);opacity:.9}.ebtn .ic{width:14px;height:14px}.ebtn .cnt{font-family:'JetBrains Mono',monospace;font-size:10.5px;background:var(--neubg);padding:1px 5px;border-radius:5px}.ebtn.on .cnt{background:rgba(255,255,255,.22)}.editing main [data-k].hov{outline:1px dashed var(--acc);outline-offset:4px;border-radius:3px;cursor:pointer}.editing main [data-k].sel{outline:2px solid var(--acc);outline-offset:4px;border-radius:3px}[contenteditable="true"]{outline:2px solid var(--acc)!important;outline-offset:4px;border-radius:3px;background:var(--accbg)}.etool{position:absolute;z-index:80;display:none;gap:2px;background:var(--pane);border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:0 6px 20px rgba(0,0,0,.16)}.etool.show{display:flex}.etool button{border:0;background:transparent;color:var(--ink2);padding:6px;border-radius:7px;cursor:pointer;display:flex;line-height:0}.etool button:hover{background:var(--line2);color:var(--acc)}.etool button.dang:hover{background:var(--badbg);color:var(--bad)}.etool .ic{width:15px;height:15px}.etool .sep{width:1px;background:var(--line);margin:3px 2px}.emenu{position:absolute;z-index:81;display:none;flex-direction:column;background:var(--pane);border:1px solid var(--line);border-radius:11px;padding:5px;box-shadow:0 8px 26px rgba(0,0,0,.18);min-width:186px}.emenu.show{display:flex}.emenu button{border:0;background:transparent;color:var(--ink2);font:600 12.6px Manrope,sans-serif;text-align:left;padding:7px 9px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px}.emenu button:hover{background:var(--line2);color:var(--ink)}.emenu .mh{font-size:9.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3);padding:7px 9px 4px}.emenu .ic{width:14px;height:14px;color:var(--ink3)}[data-k].fl-rev{box-shadow:-3px 0 0 var(--warn);padding-left:10px;border-radius:2px}[data-k].fl-ok{box-shadow:-3px 0 0 var(--acc);padding-left:10px;border-radius:2px}[data-k].fl-dis{box-shadow:-3px 0 0 var(--info);padding-left:10px;border-radius:2px}[data-k].fl-cut{opacity:.45;text-decoration:line-through}tr.fl-rev,tr.fl-ok,tr.fl-dis{box-shadow:none}.vs.fl-rev{border-color:var(--warn)}.vs.fl-ok{border-color:var(--acc)}.vs.fl-dis{border-color:var(--info)}.vs[data-k].fl-rev,.vs[data-k].fl-ok,.vs[data-k].fl-dis{padding-left:0}tr.fl-rev td:first-child{border-left:3px solid var(--warn)}tr.fl-ok td:first-child{border-left:3px solid var(--acc)}tr.fl-dis td:first-child{border-left:3px solid var(--info)}.nchip{display:block;margin:7px 0 10px;background:var(--warnbg);border:1px solid rgba(168,113,12,.25);border-left:3px solid var(--warn);border-radius:9px;padding:9px 12px;font-size:12.8px;color:var(--ink2)}.nchip .nm{display:flex;gap:8px;align-items:baseline;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}.nchip .nx{margin-left:auto;cursor:pointer;border:0;background:transparent;color:var(--ink3);padding:0;line-height:0}.nchip .nx:hover{color:var(--bad)}.nchip .nx .ic{width:12px;height:12px}.nnew{display:block;background:var(--accbg);border:1px solid var(--line);border-left:3px solid var(--acc)}.epan{position:fixed;right:18px;bottom:76px;z-index:69;width:330px;max-height:62vh;overflow-y:auto;background:var(--pane);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 10px 34px rgba(0,0,0,.18);display:none}.epan.show{display:block}.epan h5{margin:0 0 4px;font-size:12.5px;font-weight:800;letter-spacing:-.1px}.epan .sub{font-size:11.5px;color:var(--ink3);margin-bottom:11px}.epan .row{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line2);font-size:12.4px;color:var(--ink2)}.epan .row span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.epan .row button{border:0;background:var(--accbg);color:var(--acc);font:700 11px Manrope,sans-serif;padding:4px 8px;border-radius:6px;cursor:pointer;flex:none}.epan .empty{font-size:12.4px;color:var(--ink3);padding:6px 0}.epan .foot{border-top:1px solid var(--line);margin-top:10px;padding-top:9px;display:flex;gap:6px;flex-wrap:wrap}.epan .foot button{border:1px solid var(--line);background:transparent;color:var(--ink2);font:600 11.5px Manrope,sans-serif;padding:5px 9px;border-radius:7px;cursor:pointer}.epan .foot button:hover{border-color:var(--bad);color:var(--bad)}.ehint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(10px);z-index:75;background:var(--ink);color:var(--bg);font:600 12.5px Manrope,sans-serif;padding:8px 15px;border-radius:9px;opacity:0;pointer-events:none;transition:.22s}.ehint.show{opacity:1;transform:translateX(-50%) translateY(0)}@media print{.ebar,.etool,.emenu,.epan,.ehint,.nchip .nx{display:none!important}}@media(max-width:1000px){.ebar{right:10px;bottom:10px}.epan{right:10px;left:10px;width:auto}}.vwrap{margin:16px 0}.vfilter{display:flex;gap:7px;flex-wrap:wrap;align-items:center;padding:12px 14px;background:var(--pane);border:1px solid var(--line);border-radius:var(--r);margin:14px 0;position:sticky;top:0;z-index:20}.vfilter input{flex:1;min-width:150px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:500 13px Manrope,sans-serif;padding:7px 11px;border-radius:8px;outline:none}.vfilter input:focus{border-color:var(--acc)}.vfilter button{border:1px solid var(--line);background:transparent;color:var(--ink2);font:600 11.5px Manrope,sans-serif;padding:5px 10px;border-radius:7px;cursor:pointer;transition:.13s}.vfilter button:hover{border-color:var(--acc);color:var(--acc)}.vfilter button.on{background:var(--acc);border-color:var(--acc);color:#fff}.vfilter .cc{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink3);margin-left:auto;white-space:nowrap}.vs{border:1px solid var(--line);border-radius:var(--r);background:var(--pane);margin:12px 0;overflow:hidden;scroll-margin-top:70px}.vs.hide{display:none}.vs>.vh{padding:13px 17px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--line2),transparent);display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.vs>.vh .vid{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:var(--acc);letter-spacing:.2px}.vs>.vh .vn{font-size:16px;font-weight:800;letter-spacing:-.3px;color:var(--ink)}.vs>.vh .vmeta{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap}.vb{padding:6px 17px 16px}.vb h5{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3);font-weight:800;margin:15px 0 5px;display:flex;align-items:center;gap:6px}.vb h5 .ic{width:12px;height:12px;color:var(--acc)}.vb>h5:first-child{margin-top:10px}.vb p{font-size:13.2px;margin:0 0 8px}.vb ul{font-size:13px;margin:4px 0 8px}.vb .goal{font-size:13.8px;color:var(--ink);font-weight:500;margin:10px 0 2px}.vb table{font-size:12.4px}.vb th{font-size:9.5px;padding:6px 9px}.vb td{padding:7px 9px}.vb .tw{margin:6px 0 4px}.vb code{font-size:11.4px}.vg2{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}@media(max-width:820px){.vg2{grid-template-columns:1fr;gap:0}}.fr{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:1.5px 5px;border-radius:4px;white-space:nowrap}.fr.f1{background:var(--accbg);color:var(--acc)}.fr.f2{background:var(--warnbg);color:var(--warn)}.fr.f3{background:var(--infobg);color:var(--info)}.fr.f4{background:var(--neubg);color:var(--ink3)}.acl{list-style:none;padding:0;margin:6px 0 4px;font-size:12.8px}.acl li{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:3px 0;margin:0;color:var(--ink2);border-top:1px solid var(--line2)}.acl li:first-child{border-top:0}.acl li::before{content:""}.acl li b.n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink3);font-weight:700;padding-top:2px}.api{font-family:'JetBrains Mono',monospace;font-size:11.4px;display:flex;flex-wrap:wrap;gap:5px;margin:5px 0 8px}.api span{background:var(--neubg);color:var(--ink2);padding:2.5px 7px;border-radius:5px;border:1px solid var(--line2)}.api span.ev{background:var(--infobg);color:var(--info);border-color:transparent}.api span.new{background:var(--warnbg);color:var(--warn);border-color:transparent}.sm{border:1px solid var(--line);border-radius:var(--r2);background:var(--pane);padding:14px 16px;margin:12px 0;overflow-x:auto}.sm .smt{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:9px}.smf{display:flex;align-items:center;gap:0;flex-wrap:nowrap;min-width:min-content;padding-bottom:4px}.smn{border:1.5px solid var(--line);border-radius:8px;padding:6px 11px;font-size:11.8px;font-weight:700;color:var(--ink2);background:var(--bg);white-space:nowrap;flex:none}.smn.st{border-color:var(--acc);color:var(--acc);background:var(--accbg)}.smn.en{border-color:var(--info);color:var(--info);background:var(--infobg)}.smn.ko{border-color:var(--bad);color:var(--bad);background:var(--badbg)}.sma{flex:none;display:flex;flex-direction:column;align-items:center;padding:0 3px;min-width:74px}.sma i{font-family:'JetBrains Mono',monospace;font-size:9px;font-style:normal;color:var(--ink3);text-align:center;line-height:1.25;padding-bottom:2px}.sma u{display:block;width:100%;height:1px;background:var(--line);text-decoration:none;position:relative}.sma u::after{content:"";position:absolute;right:0;top:-2.5px;border-left:5px solid var(--line);border-top:3px solid transparent;border-bottom:3px solid transparent}.dm{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:11px;margin:14px 0}.dmc{border:1px solid var(--line);border-radius:var(--r2);background:var(--pane);padding:13px 15px}.dmc.self{border-color:var(--acc);background:var(--accbg)}.dmc .dmf{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink3);margin-bottom:4px;word-break:break-all}.dmc .dmn{font-size:13.6px;font-weight:700;color:var(--ink);margin-bottom:4px}.dmc .dmd{font-size:12.3px;color:var(--ink2);line-height:1.5}.dmc .dml{font-size:11.5px;color:var(--acc);margin-top:6px;font-weight:600}.xr{display:block;background:var(--infobg);border:1px solid rgba(44,95,168,.2);border-left:3px solid var(--info);border-radius:9px;padding:9px 13px;font-size:12.6px;color:var(--ink2);margin:10px 0}.xr b{color:var(--ink)}.xr .ic{width:13px;height:13px;color:var(--info);margin-right:6px;vertical-align:-.12em}.ec{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--bad);white-space:nowrap}.ok{color:var(--acc);font-weight:700}.gl{display:grid;grid-template-columns:150px 1fr;gap:3px 16px;font-size:13px;margin:10px 0}.gl dt{font-weight:700;color:var(--ink);padding-top:1px}.gl dd{margin:0;color:var(--ink2);padding-bottom:5px;border-bottom:1px solid var(--line2)}@media(max-width:700px){.gl{grid-template-columns:1fr;gap:0}.gl dt{padding-top:9px}}.wf{border:1px solid var(--line);border-radius:var(--r2);background:var(--bg);padding:11px;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink2);line-height:1.5;white-space:pre;overflow-x:auto}.tok{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px}.tok i{width:13px;height:13px;border-radius:4px;border:1px solid var(--line);display:inline-block;flex:none}</style>
+</head>
+<style>
+.nav a.cur{background:var(--accbg);color:var(--acc);font-weight:700}
+.nav a.part{font-weight:600}
+.nav .home{display:block;padding:5px 9px;border-radius:7px;font-size:12.4px;color:var(--ink3);text-decoration:none}
+.nav .home:hover{background:var(--line2);color:var(--ink)}
+.crumbs{font-size:12.4px;color:var(--ink3);margin:0 0 22px;display:flex;gap:7px;flex-wrap:wrap}
+.crumbs a{color:var(--acc);text-decoration:none;font-weight:600}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:46px 0 0;padding-top:18px;border-top:1px solid var(--line)}
+.pn a{display:block;border:1px solid var(--line);border-radius:12px;padding:12px 15px;text-decoration:none;background:var(--pane);color:var(--ink2);font-size:13px}
+.pn a:hover{border-color:var(--acc)}
+.pn a b{display:block;color:var(--ink);font-size:14.5px;margin-top:2px}
+.pn a.nx{text-align:right;grid-column:2}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:11px;margin:18px 0}
+.toc a{display:block;border:1px solid var(--line);border-radius:12px;padding:13px 15px;text-decoration:none;background:var(--pane);color:inherit;transition:.13s}
+.toc a:hover{border-color:var(--acc);transform:translateY(-1px)}
+.toc .tn{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--acc);font-weight:700}
+.toc .tt{display:block;font-size:15px;font-weight:700;color:var(--ink);margin:2px 0 4px}
+.toc .td{font-size:12.4px;color:var(--ink2);line-height:1.5}
+.toc .grp{grid-column:1/-1;font-size:10px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3);margin:12px 0 -2px}
+/* impaginazione semplice, come i documenti 02 e 06: una colonna, nessuna area con scorrimento proprio, nessuna animazione */
+html{scroll-behavior:auto!important}
+.wrap{display:block!important;max-width:1040px;margin:0 auto}
+main{padding:8px 40px 140px!important;max-width:none!important;min-width:0}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:16px 40px 12px;border-bottom:1px solid var(--line);font-size:13px}
+.topbar .tb-home{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-weight:800}
+.topbar .tb-where{color:var(--ink3);font-size:12.4px}
+.topbar .tb-where a{color:var(--acc);text-decoration:none;font-weight:600}
+.topbar .tb-pn{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.topbar .tb-pn a{text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:5px 10px;color:var(--ink2);font-weight:600;font-size:12.4px;background:var(--pane)}
+.topbar .tb-pn a:hover{border-color:var(--acc);color:var(--acc)}
+details.menu{margin:14px 0 6px;border:1px solid var(--line);border-radius:12px;background:var(--pane)}
+details.menu>summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px;color:var(--ink);list-style:none}
+details.menu>summary::-webkit-details-marker{display:none}
+details.menu>summary::before{content:"+";display:inline-block;width:16px;color:var(--acc);font-weight:800}
+details.menu[open]>summary::before{content:"\2212"}
+.nav{position:static!important;height:auto!important;overflow:visible!important;border:0!important;padding:0 10px 12px!important;background:transparent!important;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0 12px}
+.nav .nsec{grid-column:1/-1}
+.nav a.on{background:transparent}
+@media(max-width:1000px){main{padding:4px 16px 90px!important}.topbar{padding:12px 16px 10px}.topbar .tb-pn{margin-left:0}}
+</style>
+<body data-part="10-interfaccia-e-design">
+<div class="wrap">
+<div class="topbar"><a class="tb-home" href="../00-documento-di-prodotto.html"><span class="dot"></span>Nodo &middot; Documento di prodotto</a><span class="tb-where"><a href="../INDICE.html">Tutti i documenti</a> &middot; Parte 10 di 16</span><span class="tb-pn"><a href="../00-documento-di-prodotto.html">Indice</a><a href="09-contratti-verso-i-sistemi.html">&larr; Parte 9</a><a href="11-requisiti-non-funzionali.html">Parte 11 &rarr;</a></span></div>
+<main>
+<details class="menu"><summary>Tutte le parti &middot; e le 7 sezioni di questa</summary>
+<nav class="nav">
+<div class="nsec">Fondamenta</div>
+<a class="part" href="00-come-leggere.html">0 &middot; Come si legge questo documento</a>
+<a class="part" href="01-il-prodotto.html">1 &middot; Il prodotto</a>
+<a class="part" href="02-modello-dei-dati.html">2 &middot; Il modello: le cose di cui il sistema parla</a>
+<a class="part" href="03-regole-di-sistema.html">3 &middot; Le regole di comportamento del sistema</a>
+<div class="nsec">Le viste</div>
+<a class="part" href="04-ruoli.html">4 &middot; Le viste, ruolo per ruolo</a>
+<a class="part" href="05-schermate.html">5 &middot; Il catalogo delle schermate</a>
+<div class="nsec">Comportamenti</div>
+<a class="part" href="06-motore-di-conversazione.html">6 &middot; Il motore di conversazione</a>
+<a class="part" href="07-flussi.html">7 &middot; I flussi, passo per passo</a>
+<a class="part" href="08-permessi.html">8 &middot; La matrice dei permessi</a>
+<a class="part" href="09-contratti-verso-i-sistemi.html">9 &middot; I contratti verso i sistemi</a>
+<a class="part cur" href="#pd">10 &middot; Interfaccia e design</a>
+<a class="sub" href="#pd-s1">10.1 La pianta fissa</a>
+<a class="sub" href="#pd-s2">10.2 Sul telefono cambia l'ordine, non il contenuto</a>
+<a class="sub" href="#pd-s3">10.3 I quattro modelli di schermata</a>
+<a class="sub" href="#pd-s4">10.4 I componenti che ricorrono ovunque</a>
+<a class="sub" href="#pd-s5">10.5 Colore e tipografia</a>
+<a class="sub" href="#pd-s6">10.6 Accessibilit&agrave;, e perch&eacute; qui non &egrave; un adempimento</a>
+<a class="sub" href="#pd-s7">10.7 Le regole di scrittura</a>
+<div class="nsec">Qualit&agrave;</div>
+<a class="part" href="11-requisiti-non-funzionali.html">11 &middot; Requisiti non funzionali</a>
+<a class="part" href="12-casi-limite-ed-errori.html">12 &middot; Casi limite ed errori</a>
+<a class="part" href="13-prove-e-telemetria.html">13 &middot; Prove e telemetria</a>
+<a class="part" href="14-accettazione.html">14 &middot; Quando una cosa &egrave; finita</a>
+<a class="part" href="15-tracciabilita.html">15 &middot; Tracciabilit&agrave;</a>
+<a class="part" href="16-decisioni-aperte.html">16 &middot; Le decisioni che restano aperte</a>
+<div class="nsec">Collegati</div>
+<a href="../07-schermate/indice.html">Catalogo delle schermate</a>
+<a href="../INDICE.html">Tutti i documenti</a>
+</nav>
+</details>
+<section id="pd">
+<div class="kick">Parte 10</div>
+<h2>Interfaccia e design</h2>
+<p class="lead">Centoventicinque schermate costruite da una persona sola non possono essere centoventicinque progetti. Questa parte fissa i pochi modelli da cui si ottengono tutte, i componenti che li compongono, e le regole di forma che rendono il prodotto usabile da chi lo guarda due minuti fra due chiamate e da chi ci passa otto ore.</p>
+
+<div class="xr"><b>Dove si guarda la forma vera.</b> Il <b>documento 05</b> &egrave; il prototipo navigabile: dieci ruoli, navigazione reale, organigramma completo. Serve a discutere l'aspetto. Questa parte estrae da quello le costanti che diventano codice, e non descrive a parole ci&ograve; che l&igrave; si vede.</div>
+
+<h3 id="pd-s1">10.1 La pianta fissa</h3>
+<p>Tre zone, sempre nello stesso posto, in ogni schermata e per ogni ruolo. Una persona che impara dove sono le cose in una schermata le ritrova in tutte le altre.</p>
+  <div class="wf">┌──────────────┬───────────────────────────────────────────────┐
+│              │  IDENTITÀ · perimetro attivo · freschezza     │
+│  NAVIGAZIONE ├───────────────────────────────────────────────┤
+│              │                                               │
+│  per ruolo   │  CONTENUTO                                    │
+│  ordinata    │  ci che blocca → ci che scade → il resto    │
+│  per         │                                               │
+│  frequenza   │                                               │
+│  d'uso       ├───────────────────────────────────────────────┤
+│              │  CHIEDI  ·  sempre raggiungibile              │
+└──────────────┴───────────────────────────────────────────────┘</div>
+<ul>
+<li><b>La navigazione &egrave; per ruolo e si riordina da sola.</b> Le voci si ordinano per frequenza d'uso reale della persona, non per struttura aziendale. &Egrave; lo stesso meccanismo che decide le viste fisse (6.4), applicato al menu.</li>
+<li><b>Il perimetro attivo &egrave; sempre scritto in alto.</b> &laquo;Team Retention &middot; Tirana&raquo;. Una persona con pi&ugrave; perimetri deve sapere in quale sta guardando <b>prima</b> di leggere un numero, non dopo aver chiesto perch&eacute; non torna.</li>
+<li><b>La freschezza sta accanto ai dati, non in fondo alla pagina.</b> Se la schermata &egrave; in stato parziale, lo dichiara in testa (3.3).</li>
+<li><b>Chiedi non &egrave; una pagina.</b> &Egrave; una barra raggiungibile da qualunque punto, che apre la conversazione con il contesto della schermata in cui ci si trova gi&agrave; dentro.</li>
+</ul>
+
+<h3 id="pd-s2">10.2 Sul telefono cambia l'ordine, non il contenuto</h3>
+<p>Il telefono &egrave; l'unico dispositivo che molte delle 1.500 persone hanno davvero. Non esiste una versione ridotta di Nodo: esiste lo stesso prodotto, impilato.</p>
+<div class="tw"><table>
+<tr><th style="width:150px">Regola</th><th>Comportamento</th></tr>
+<tr><td><b>Si impila, non si taglia</b></td><td>Le zone diventano una colonna nell'ordine di lettura dichiarato nella scheda della schermata. Nessun contenuto sparisce: sparisce l'affiancamento.</td></tr>
+<tr><td><b>L'azione principale resta raggiungibile</b></td><td>Il pulsante che conta sta in basso, dove arriva il pollice, e resta visibile mentre si scorre. Su OP-T3, che &egrave; la schermata pi&ugrave; densa del prodotto, l'azione in blocco &egrave; ancorata.</td></tr>
+<tr><td><b>Le tabelle larghe diventano schede</b></td><td>Una riga di tabella con otto colonne diventa una scheda con otto righe etichettate. Lo scorrimento orizzontale su telefono &egrave; il modo pi&ugrave; sicuro per far perdere una colonna.</td></tr>
+<tr><td><b>I numeri prima dei grafici</b></td><td>Su rete lenta arrivano prima i valori, poi la rappresentazione (3.12). Un grafico &egrave; un modo di leggere un numero, non il numero.</td></tr>
+<tr><td><b>Nessun gesto obbligatorio</b></td><td>Tutto ci&ograve; che si fa con uno scorrimento laterale deve essere possibile anche con un tocco su un comando visibile. Un gesto che nessuno scopre &egrave; una funzione che non esiste.</td></tr>
+</table></div>
+
+<h3 id="pd-s3">10.3 I quattro modelli di schermata</h3>
+<p>Ogni schermata della parte 5 &egrave; una di queste quattro, con dati diversi. <b>Il codice si scrive quattro volte, non centoventicinque.</b> &Egrave; la conseguenza pratica del modello a quattro oggetti di 2.5, e la ragione per cui questo perimetro &egrave; realistico per una persona sola.</p>
+<div class="g2">
+<div class="card q">
+<b>1 &middot; Cruscotto</b> <span class="p s">quasi sempre S</span>
+<p style="margin-bottom:6px">Da tre a sei numeri, ciascuno con il proprio bersaglio, la propria fonte e la propria data. Ogni numero si apre.</p>
+<p style="margin-bottom:0;font-size:12.6px;color:var(--ink3)">OP-T1, OP-F1, HR-1, FI-1, QA-1, TR-1, IT-1, PR-1, RC-1, WF-1, PC-1, LG-1, OP-C1, OP-O1 &mdash; 14 schermate su un solo componente.</p>
+</div>
+<div class="card q">
+<b>2 &middot; Coda di lavoro</b> <span class="p a">sempre A</span>
+<p style="margin-bottom:6px">Una lista di cose che aspettano una decisione, ordinata per ci&ograve; che blocca e ci&ograve; che scade, con l'azione in linea e l'azione in blocco. &Egrave; il modello pi&ugrave; importante del prodotto.</p>
+<p style="margin-bottom:0;font-size:12.6px;color:var(--ink3)">OP-T3, OP-T4, OP-T7, OP-F6, OP-F7, OP-F8, HR-7, HR-M1, PY-4, PR-2, TR-4, TR-M1, RC-M2, AN-M1, IT-2 &mdash; oltre 30 schermate.</p>
+</div>
+<div class="card q">
+<b>3 &middot; Scheda con discesa</b> <span class="p r">quasi sempre R</span>
+<p style="margin-bottom:6px">Un oggetto &mdash; una persona, un cedolino, un ciclo, un contratto &mdash; con le sue sezioni, e da ogni valore si scende fino al fatto che lo ha prodotto.</p>
+<p style="margin-bottom:0;font-size:12.6px;color:var(--ink3)">HR-2, B4, PY-6, QA-2, PY-8, LG-3, SA-3.</p>
+</div>
+<div class="card q">
+<b>4 &middot; Modulo con verifica preventiva</b> <span class="p a">sempre A</span>
+<p style="margin-bottom:6px">Si chiede qualcosa, e <b>prima</b> di poter inviare si vedono le conseguenze: saldo residuo, copertura, budget, vincolo contrattuale.</p>
+<p style="margin-bottom:0;font-size:12.6px;color:var(--ink3)">B10, OP-F3, OP-F4, RC-3, RC-4, PC-2, OP-C3, SA-5.</p>
+</div>
+</div>
+<div class="card i">
+<b>Il quinto modello che non esiste apposta.</b>
+<p style="margin-bottom:0">Non c'&egrave; un modello &laquo;pagina di configurazione con venti campi&raquo;. Tutto ci&ograve; che si configura &mdash; policy, griglie, soglie, parametri &mdash; usa il modello 4, con l'anteprima dell'effetto obbligatoria: <b>quante persone cambiano posizione se salvo</b>. &Egrave; l'unica difesa contro un campo modificato per errore che si scopre a fine mese su 1.500 cedolini.</p>
+</div>
+
+<h3 id="pd-s4">10.4 I componenti che ricorrono ovunque</h3>
+<div class="tw"><table>
+<tr><th style="width:165px">Componente</th><th>Regola di comportamento</th></tr>
+<tr><td><b>Numero con fonte</b></td><td>Valore, bersaglio se esiste, variazione se ha senso, e l'indicatore di freschezza (3.9). Un tocco apre da dove viene. <b>Nessun numero compare mai nudo</b> in nessuna schermata.</td></tr>
+<tr><td><b>Indicatore di freschezza</b></td><td>Le quattro classi di 3.9, sempre nella stessa forma e nello stesso posto. Quando la fonte tace, prende il posto del valore e non gli si affianca.</td></tr>
+<tr><td><b>Riga di lista</b></td><td>Identificatore, stato, ci&ograve; che la rende urgente, azione in linea. Selezionabile. Lo stato non &egrave; mai affidato al solo colore: c'&egrave; sempre anche una parola o una forma (10.6).</td></tr>
+<tr><td><b>Barra di azione in blocco</b></td><td>Ancorata in basso, con il conteggio della selezione, il totale dell'effetto e le esclusioni dichiarate prima della conferma (M4).</td></tr>
+<tr><td><b>Campo motivo</b></td><td>Elenco di causali predefinite pi&ugrave; testo libero, minimo dieci caratteri (M2). Le causali predefinite non sono una comodit&agrave;: servono a fare statistica sugli errori ricorrenti, che &egrave; come si smette di ripeterli.</td></tr>
+<tr><td><b>Scheda di anomalia</b></td><td>La regola che l'ha generata, i fatti che la sostengono con i numeri veri, lo storico sulla stessa persona, due o tre decisioni possibili. <b>Tutto nella stessa scheda</b>: chi decide non deve aprire altro.</td></tr>
+<tr><td><b>Sequenza di stato</b></td><td>Per i cicli e le richieste: dove siamo, chi ha agito, chi deve agire, da quanto. La forma &egrave; sempre la stessa, che si tratti di un ciclo payroll o di una richiesta di materiale.</td></tr>
+<tr><td><b>Fuori perimetro</b></td><td>Esiste, non &egrave; tuo, ecco il riferimento a cui chiedere, e un pulsante per chiedere un accesso motivato che resta registrato (V3).</td></tr>
+<tr><td><b>Differenza fra fonti</b></td><td>Due valori affiancati con la fonte di ciascuno e la differenza. Non c'&egrave; un valore &laquo;giusto&raquo; evidenziato: <b>Nodo non sceglie</b> (parte 12).</td></tr>
+</table></div>
+
+<h3 id="pd-s5">10.5 Colore e tipografia</h3>
+<p>Il colore porta lo stato, mai l'informazione da solo. La gamma &egrave; volutamente stretta: cinque significati, e nient'altro.</p>
+<div class="tw"><table>
+<tr><th style="width:150px">Significato</th><th style="width:105px">Uso</th><th>Dove compare e che cosa non deve fare</th></tr>
+<tr><td><span class="tok"><i style="background:var(--acc)"></i> Conferma</span></td><td>verde</td><td>Approvato, completato, in regola, entro il bersaglio. <b>Non</b> per &laquo;attivo&raquo; o &laquo;selezionato&raquo;: quelli non sono un giudizio.</td></tr>
+<tr><td><span class="tok"><i style="background:var(--warn)"></i> Attenzione</span></td><td>ambra</td><td>In attesa, in scadenza, dato ritardato, azione richiesta. &Egrave; il colore pi&ugrave; usato del prodotto, perch&eacute; la maggior parte del lavoro &egrave; in questo stato.</td></tr>
+<tr><td><span class="tok"><i style="background:var(--bad)"></i> Blocco</span></td><td>rosso</td><td>Bloccante, scaduto, fallito, fuori perimetro. <b>Riservato a ci&ograve; che impedisce di procedere</b>: usarlo per &laquo;sotto la media&raquo; lo svaluta, e quando servir&agrave; davvero nessuno lo guarder&agrave; pi&ugrave;.</td></tr>
+<tr><td><span class="tok"><i style="background:var(--info)"></i> Informazione</span></td><td>blu</td><td>Contesto, nota di sistema, stato obsoleto, riferimento a un'altra schermata. Mai un giudizio.</td></tr>
+<tr><td><span class="tok"><i style="background:var(--neu)"></i> Neutro</span></td><td>grigio</td><td>Tutto il resto. La maggior parte di una schermata sana &egrave; neutra: se tutto &egrave; colorato, niente lo &egrave;.</td></tr>
+</table></div>
+<ul>
+<li><b>Un carattere solo</b>, con i numeri a larghezza fissa nelle tabelle: una colonna di importi che non si allinea &egrave; una colonna che non si legge.</li>
+<li><b>Due decimali sempre</b> sugli importi, anche quando sono zero, e mai arrotondamenti di visualizzazione che fanno non quadrare un totale con la somma delle sue righe. &Egrave; la richiesta esplicita di chi lavora in Payroll e Finance (1.6).</li>
+<li><b>Tema chiaro e scuro</b> completi. Le postazioni condivise hanno schermi vecchi e illuminazione variabile: il contrasto va verificato su entrambi, non solo sul portatile di chi sviluppa.</li>
+</ul>
+
+<h3 id="pd-s6">10.6 Accessibilit&agrave;, e perch&eacute; qui non &egrave; un adempimento</h3>
+<p>Un Team Leader che approva duecento righe con il mouse viene punito dal prodotto. Una persona che lavora su uno schermo vecchio con la luce del sole addosso non distingue due sfumature di grigio. Non sono casi limite: sono la condizione normale di met&agrave; degli utenti.</p>
+<div class="tw"><table>
+<tr><th style="width:170px">Requisito</th><th>Come si realizza e come si verifica</th></tr>
+<tr><td><b>Tastiera completa</b></td><td>Ogni flusso si completa senza mouse, con ordine di attraversamento prevedibile. Sulle code di lavoro esistono scorciatoie per scorrere, selezionare, approvare e passare oltre. <b>Verifica</b>: approvare 50 righe senza toccare il mouse, cronometrato.</td></tr>
+<tr><td><b>Niente affidato al colore</b></td><td>Ogni stato ha anche una parola, un'icona o una forma. <b>Verifica</b>: la schermata in scala di grigi resta comprensibile.</td></tr>
+<tr><td><b>Contrasto adeguato</b></td><td>Verificato su entrambi i temi e su uno schermo di scarsa qualit&agrave;, non solo con uno strumento automatico.</td></tr>
+<tr><td><b>Struttura leggibile dalle tecnologie assistive</b></td><td>Titoli in gerarchia, tabelle con intestazioni dichiarate, ogni comando con un nome che dice che cosa fa. Un pulsante chiamato &laquo;conferma&raquo; senza contesto non dice niente a chi non vede la schermata.</td></tr>
+<tr><td><b>Nessun limite di tempo nascosto</b></td><td>Se una sessione scade, si avvisa prima e non si perde ci&ograve; che si stava scrivendo. Perdere una motivazione di trenta parole perch&eacute; la sessione &egrave; scaduta &egrave; il modo pi&ugrave; rapido per far smettere di scrivere motivazioni.</td></tr>
+<tr><td><b>Quattro lingue complete</b></td><td>Compresi i messaggi di errore e le notifiche. Una schermata tradotta con gli errori in italiano non &egrave; tradotta.</td></tr>
+</table></div>
+
+<h3 id="pd-s7">10.7 Le regole di scrittura</h3>
+<p>Il testo &egrave; interfaccia. Queste regole valgono per ogni parola che compare a schermo e in ogni lingua.</p>
+<ul>
+<li><b>Si dice che cosa &egrave; successo, non che cosa il sistema ha fatto.</b> &laquo;Il WFM non ha ancora pubblicato i turni della settimana del 20&raquo;, non &laquo;errore nel recupero dei dati&raquo;.</li>
+<li><b>Ogni errore dice che cosa si pu&ograve; fare comunque</b>, e porta un codice da dare all'IT (parte 12). Un codice da solo non &egrave; un messaggio; un messaggio senza codice non &egrave; diagnosticabile.</li>
+<li><b>Il vuoto si spiega.</b> Mai &laquo;nessun risultato&raquo;: sempre perch&eacute;, e se &egrave; una buona notizia, si dice che lo &egrave;.</li>
+<li><b>Niente gergo tecnico e niente gergo aziendale inventato.</b> Le parole del mestiere sono quelle del glossario (1.7), usate con quel significato.</li>
+<li><b>Le conferme dicono il numero.</b> &laquo;Approvi 197 righe per 1.584 ore&raquo;, non &laquo;confermi l'operazione?&raquo;.</li>
+<li><b>Il testo non si allunga traducendo.</b> L'albanese e il tedesco sono pi&ugrave; lunghi dell'italiano: le etichette vanno provate nella lingua pi&ugrave; lunga, non in quella in cui sono state scritte.</li>
+</ul>
+</section>
+<div class="pn"><a href="09-contratti-verso-i-sistemi.html">&larr; Parte 9<b>I contratti verso i sistemi</b></a><a class="nx" href="11-requisiti-non-funzionali.html">Parte 11 &rarr;<b>Requisiti non funzionali</b></a></div>
+</main>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var targets = links.map(function(a){ var hr=a.getAttribute("href")||""; return hr.charAt(0)==="#" ? document.querySelector(hr) : null; });
+  function sync(){
+    var best = 0, bestTop = -1e9;
+    for (var i=0;i<targets.length;i++){
+      if(!targets[i]) continue;
+      var t = targets[i].getBoundingClientRect().top - 90;
+      if (t <= 0 && t > bestTop){ bestTop = t; best = i; }
+    }
+    links.forEach(function(a,i){ a.classList.toggle('on', i===best); });
+  }
+  var tick=false;
+function onScroll(){ if(tick) return; tick=true; requestAnimationFrame(function(){ sync(); tick=false; }); }
+window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('nodo:changed', onScroll);
+  sync();
+})();
+</script>
+
+<div class="etool" id="etool"></div>
+<div class="emenu" id="emenu"></div>
+<div class="epan" id="epan"></div>
+<div class="ebar" id="ebar"></div>
+<div class="ehint" id="ehint"></div>
+
+<script id="ed-js">
+(function(){
+"use strict";
+var P = {
+eye:'<path d="M2 12s3.6-6.2 10-6.2S22 12 22 12s-3.6 6.2-10 6.2S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/>',
+pencil:'<path d="M4 20h4L19.2 8.8a2.7 2.7 0 0 0-3.8-3.8L4 16.2V20Z"/>',
+send:'<path d="m22 2-7.5 20-3.5-8.5L2.5 10 22 2Z"/>',
+check:'<path d="m4 12.5 5 5L20 6.5"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+ban:'<circle cx="12" cy="12" r="9"/><path d="m6 6 12 12"/>',
+layers:'<path d="m12 3 9 4.8-9 4.8-9-4.8L12 3Z"/><path d="m3 14 9 4.8L21 14"/>',
+pin:'<path d="M6.8 3.5h10.4v17L12 16.4l-5.2 4.1v-17Z"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.2-4.2"/>',
+zap:'<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 2"/>',
+shield:'<path d="m12 3 8 3v6c0 5-3.6 8.2-8 9-4.4-.8-8-4-8-9V6l8-3Z"/>',
+users:'<path d="M16 19v-1.8a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V19"/><circle cx="9" cy="7.5" r="3.8"/><path d="M22 19v-1.8a4 4 0 0 0-3-3.8"/>',
+user:'<path d="M20 21v-2a5 5 0 0 0-5-5H9a5 5 0 0 0-5 5v2"/><circle cx="12" cy="7" r="4"/>',
+headset:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14h2.4v5.4H5.2A1.2 1.2 0 0 1 4 18.2V14Zm16 0h-2.4v5.4h1.2A1.2 1.2 0 0 0 20 18.2V14Z"/>',
+briefcase:'<rect x="3" y="7.5" width="18" height="12.5" rx="2"/><path d="M9 7.5V5.2A1.2 1.2 0 0 1 10.2 4h3.6A1.2 1.2 0 0 1 15 5.2V7.5"/>',
+compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5.2-5.2 2 2-5.2 5.2-2Z"/>',
+calendar:'<rect x="3" y="5.5" width="18" height="15" rx="2"/><path d="M8 3v5M16 3v5M3 11h18"/>',
+award:'<circle cx="12" cy="9" r="5.8"/><path d="m8.4 13.6-1.6 7.4L12 18.4l5.2 2.6-1.6-7.4"/>',
+heart:'<path d="M12 20S3.5 14.5 3.5 8.9A4.4 4.4 0 0 1 12 6.4a4.4 4.4 0 0 1 8.5 2.5C20.5 14.5 12 20 12 20Z"/>',
+idcard:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2.1"/><path d="M5.4 16.2c.5-1.4 1.8-2.1 3.1-2.1s2.6.7 3.1 2.1M14.5 9.5h4.5M14.5 13.5h4.5"/>',
+wallet:'<path d="M3 7.5a2 2 0 0 1 2-2h11"/><path d="M3 7.5h15.5a2.5 2.5 0 0 1 2.5 2.5v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9.5Z"/><circle cx="17" cy="13.5" r=".9" fill="currentColor" stroke="none"/>',
+banknote:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.8"/>',
+monitor:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M8.5 20.5h7M12 16.5v4"/>',
+userplus:'<path d="M15 21v-2a5 5 0 0 0-5-5H7a5 5 0 0 0-5 5v2"/><circle cx="8.5" cy="7" r="4"/><path d="M19 8.5v6M22 11.5h-6"/>',
+book:'<path d="M4 4.5h10.5a3 3 0 0 1 3 3V20H7a3 3 0 0 1-3-3V4.5Z"/><path d="M4 17a3 3 0 0 1 3-3h10.5"/>',
+chart:'<path d="M4.5 20V11M10 20V4.5M15.5 20v-6M21 20H3"/>',
+scale:'<path d="M12 4v16M7.5 20h9M5.5 8h13"/><path d="m5.5 8-2.8 6.2h5.6L5.5 8Zm13 0-2.8 6.2h5.6L18.5 8Z"/>',
+package:'<path d="m12 3 8.5 4.3v9.4L12 21l-8.5-4.3V7.3L12 3Z"/><path d="M3.5 7.3 12 11.7l8.5-4.4M12 11.7V21"/>',
+gear:'<circle cx="12" cy="12" r="3.4"/><path d="M12 2.5v2.6M12 18.9v2.6M21.5 12h-2.6M5.1 12H2.5M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8M18.7 18.7l-1.8-1.8M7.1 7.1 5.3 5.3"/>',
+message:'<path d="M4 4.5h16v11.5H8.5L4 20V4.5Z"/>',
+route:'<circle cx="5.5" cy="6" r="2.4"/><circle cx="18.5" cy="18" r="2.4"/><path d="M8 6.5h5.5a4 4 0 0 1 0 8H11a4 4 0 0 0 0 8h5"/>',
+grid:'<rect x="3" y="3" width="7.2" height="7.2" rx="1.4"/><rect x="13.8" y="3" width="7.2" height="7.2" rx="1.4"/><rect x="3" y="13.8" width="7.2" height="7.2" rx="1.4"/><rect x="13.8" y="13.8" width="7.2" height="7.2" rx="1.4"/>',
+gauge:'<path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14.5 16 9.5"/>',
+alert:'<path d="M12 4 2.5 20.5h19L12 4Z"/><path d="M12 10.5v4M12 17.5h.01"/>',
+checkcircle:'<circle cx="12" cy="12" r="9"/><path d="m8 12.2 2.8 2.8L16 9.5"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3 2.5v1.8M12 17h.01"/>',
+map:'<path d="m3 6.5 6-3 6 3 6-3v14l-6 3-6-3-6 3v-14Z"/><path d="M9 3.5v14M15 6.5v14"/>',
+box:'<path d="m12 3 8.5 4.3v9.4L12 21l-8.5-4.3V7.3L12 3Z"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/>',
+flag:'<path d="M5 21V4h13l-3 4 3 4H5"/>',
+x:'<path d="m6 6 12 12M18 6 6 18"/>',
+undo:'<path d="M4 10.5h10a5 5 0 0 1 0 10h-3"/><path d="m4 10.5 4-4M4 10.5l4 4"/>',
+download:'<path d="M12 3.5v12m0 0 4.2-4.2M12 15.5l-4.2-4.2M4 19.5h16"/>',
+db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/>',
+lock:'<rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 1 1 8 0v3.5"/>',
+sliders:'<path d="M4 6.5h16M4 12h16M4 17.5h16"/><path d="M9 4.5v4M15 10v4M7 15.5v4"/>',
+text:'<path d="M5 5.5h14M5 12h14M5 18.5h9"/>',
+arrowup:'<path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/>'
+};
+function ic(n,cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(P[n]||P.box)+'</svg>'; }
+var SEC_IC = {p0:'map',p1:'target',p2:'box',p3:'shield',p4:'users',p5:'message',p6:'route',p7:'grid',p8:'gauge',p9:'alert',p10:'checkcircle',p11:'help'};
+var ROLE_IC = {'r-agente':'headset','r-tl':'user','r-fm':'users','r-csdm':'briefcase','r-coo':'compass','r-wfm':'calendar','r-qa':'award','r-hr':'idcard','r-payroll':'wallet','r-finance':'banknote','r-it':'monitor','r-rec':'userplus','r-training':'book','r-analytics':'chart','r-people':'heart','r-legal':'scale','r-proc':'package','r-sysadmin':'gear'};
+var H4_IC = [[/vede aprendo/i,'eye'],[/pu.\s*chiedere/i,'search'],[/pu.\s*fare/i,'zap'],[/non pu./i,'ban'],[/dettaglio/i,'layers'],[/storie utente/i,'book'],[/perimetro/i,'shield']];
+var LEG_IC = {'V':'eye','M':'pencil','P':'send','A':'check','C':'plus','—':'ban','agg.':'layers'};
+function decorate(root){
+root = root || document;
+root.querySelectorAll('section[id] > h2').forEach(function(h){
+if(h.querySelector('.ic')) return;
+var id = h.parentElement.id, n = SEC_IC[id] || 'box';
+h.insertAdjacentHTML('afterbegin', ic(n));
+});
+root.querySelectorAll('.role[id] .rhead .rn').forEach(function(n){
+if(n.querySelector('.ic')) return;
+var id = n.closest('.role').id;
+n.insertAdjacentHTML('afterbegin', ic(ROLE_IC[id] || 'user'));
+});
+root.querySelectorAll('.rbody h4').forEach(function(h){
+if(h.querySelector('.ic')) return;
+var t = h.textContent, found = null;
+for(var i=0;i<H4_IC.length;i++){ if(H4_IC[i][0].test(t)){ found = H4_IC[i][1]; break; } }
+if(found) h.insertAdjacentHTML('afterbegin', ic(found));
+});
+root.querySelectorAll('.p').forEach(function(p){
+if(p.querySelector('.ic')) return;
+var n = null;
+if(p.classList.contains('s')) n='pin';
+else if(p.classList.contains('r')) n='search';
+else if(p.classList.contains('a')) n='zap';
+else if(p.classList.contains('x')) n='ban';
+else { var k = p.textContent.trim(); if(LEG_IC[k]) n = LEG_IC[k]; }
+if(n) p.insertAdjacentHTML('afterbegin', ic(n));
+});
+root.querySelectorAll('.us .t').forEach(function(t){
+if(!t.querySelector('.ic')) t.insertAdjacentHTML('afterbegin', ic('book'));
+});
+}
+var SEL = 'main p, main li, main h3, main h4, main h5, main td, main th, main tr, main .card, main .us, main .step, main .role, main .vs, main .tw, main .steps, main ul, main ol, main table, main section, main .sh, main .sb, main .t, main .rd';
+var TEXTSEL = 'p,li,h3,h4,td,th,.sh,.sb,.t,.rd';
+function hash(s){ var h=5381,i; for(i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return h.toString(36); }
+function subKeys(node, id){
+var c = 0;
+node.querySelectorAll(SEL.replace(/main /g, '')).forEach(function(x){
+if(!x.dataset.k) x.dataset.k = id + '_' + (++c);
+});
+}
+function assignKeys(){
+var seen = {};
+document.querySelectorAll(SEL).forEach(function(el){
+if(el.dataset.k) return;
+var sec = el.closest('section'), sid = sec ? sec.id : 'x';
+var base = hash(sid + '|' + el.tagName + '|' + (el.textContent||'').trim().slice(0,130));
+seen[base] = (seen[base]||0) + 1;
+el.dataset.k = base + '-' + seen[base];
+});
+}
+var NS = 'nodo-doc-v1';
+var Store = {
+mode:'local', db:null,
+init:function(){
+var self = this;
+return new Promise(function(res){
+if(!(window.claude && window.claude.use)) return res();
+var t = setTimeout(res, 3500);
+Promise.resolve(window.claude.use('db')).then(function(d){
+clearTimeout(t); if(d){ self.db = d; self.mode = 'db'; } res();
+}).catch(function(){ clearTimeout(t); res(); });
+});
+},
+all:function(col){
+var self = this;
+if(this.mode === 'db'){
+return this.db.collection(col).get().then(function(s){
+var o = {}; s.docs.forEach(function(d){ o[d.id] = d.data(); }); return o;
+}).catch(function(){ return {}; });
+}
+try { return Promise.resolve(JSON.parse(localStorage.getItem(NS+':'+col) || '{}')); }
+catch(e){ return Promise.resolve({}); }
+},
+put:function(col, id, data){
+if(this.mode === 'db') return this.db.collection(col).doc(id).set(data).catch(function(e){ toast('Salvataggio non riuscito'); });
+try { var o = JSON.parse(localStorage.getItem(NS+':'+col) || '{}'); o[id] = data; localStorage.setItem(NS+':'+col, JSON.stringify(o)); } catch(e){ toast('Memoria del browser piena'); }
+return Promise.resolve();
+},
+del:function(col, id){
+if(this.mode === 'db') return this.db.collection(col).doc(id).delete().catch(function(){});
+try { var o = JSON.parse(localStorage.getItem(NS+':'+col) || '{}'); delete o[id]; localStorage.setItem(NS+':'+col, JSON.stringify(o)); } catch(e){}
+return Promise.resolve();
+},
+nid:function(){ return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+};
+var S = { edits:{}, added:{}, notes:{} };
+var removed = [];
+var BAKED = !!document.querySelector('meta[name="nodo-export"]');
+var editing = false, sel = null;
+function author(force){
+var a = null;
+try { a = localStorage.getItem('nodo-autore'); } catch(e){}
+if(!a || force){
+a = window.prompt('Il tuo nome (compare accanto alle modifiche e alle note)', a || '');
+if(!a) return null;
+try { localStorage.setItem('nodo-autore', a); } catch(e){}
+}
+return a;
+}
+function saveEdit(k, patch){
+var cur = S.edits[k] || {};
+for(var p in patch) cur[p] = patch[p];
+cur.at = new Date().toISOString();
+cur.by = (function(){ try { return localStorage.getItem('nodo-autore') || ''; } catch(e){ return ''; } })();
+S.edits[k] = cur;
+Store.put('edits', k, cur);
+bar();
+}
+function applyAll(){
+var k, d, el;
+for(k in S.added){
+d = S.added[k];
+var anchor = document.querySelector('[data-k="' + CSS.escape(d.anchor) + '"]');
+var host = anchor || document.querySelector('main');
+var tmp = document.createElement('div');
+if(d.kind === 'li' || d.kind === 'tr'){
+tmp.innerHTML = (d.kind === 'tr' ? '<table><tbody>' : '<ul>') + d.html + (d.kind === 'tr' ? '</tbody></table>' : '</ul>');
+el = tmp.querySelector(d.kind);
+} else { tmp.innerHTML = d.html; el = tmp.firstElementChild; }
+if(!el) continue;
+el.dataset.k = k;
+if(anchor) anchor.insertAdjacentElement('afterend', el);
+else host.appendChild(el);
+subKeys(el, k);
+}
+for(k in S.edits){
+d = S.edits[k];
+el = document.querySelector('[data-k="' + CSS.escape(k) + '"]');
+if(!el) continue;
+if(d.hidden){ removed.push({k:k, txt:(el.textContent||'').trim().slice(0,110), tag:el.tagName}); el.remove(); continue; }
+if(typeof d.html === 'string') el.innerHTML = d.html;
+if(d.flag) el.classList.add('fl-' + d.flag);
+}
+for(k in S.notes){ paintNote(k, S.notes[k]); }
+decorate();
+syncNav();
+}
+function paintNote(id, n){
+var el = document.querySelector('[data-k="' + CSS.escape(n.k) + '"]');
+if(!el) return;
+if(document.getElementById('note-' + id)) return;
+var div = document.createElement('div');
+div.className = 'nchip'; div.id = 'note-' + id;
+div.innerHTML = '<div class="nm"><b>' + esc(n.by || 'anonimo') + '</b><span>' + new Date(n.ts).toLocaleDateString('it-IT') +
+'</span><button class="nx" title="Elimina nota">' + ic('x') + '</button></div>' + esc(n.text);
+div.querySelector('.nx').onclick = function(){ delete S.notes[id]; Store.del('notes', id); div.remove(); bar(); };
+el.insertAdjacentElement('afterend', div);
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function bar(){
+var nn = Object.keys(S.notes).length, nr = removed.length;
+document.getElementById('ebar').innerHTML =
+'<button class="ebtn' + (editing ? ' on' : '') + '" id="bEdit">' + ic('pencil') + (editing ? 'Modifica attiva' : 'Modifica') + '</button>' +
+'<button class="ebtn" id="bPan">' + ic('message') + 'Note e rimossi <span class="cnt">' + (nn + nr) + '</span></button>' +
+'<button class="ebtn" id="bDown" title="Scarica una copia con le tue modifiche">' + ic('download') + 'Scarica</button>';
+document.getElementById('bEdit').onclick = function(){ setEditing(!editing); };
+document.getElementById('bPan').onclick = function(){ var p = document.getElementById('epan'); p.classList.toggle('show'); if(p.classList.contains('show')) panel(); };
+document.getElementById('bDown').onclick = download;
+}
+function setEditing(v){
+editing = v;
+document.body.classList.toggle('editing', v);
+if(!v){ deselect(); }
+else if(!author()) { editing = false; document.body.classList.remove('editing'); }
+bar();
+toast(editing ? 'Tocca un elemento per modificarlo, toglierlo o commentarlo' : 'Modifica disattivata');
+}
+var ht;
+function toast(m){
+var h = document.getElementById('ehint'); h.textContent = m; h.classList.add('show');
+clearTimeout(ht); ht = setTimeout(function(){ h.classList.remove('show'); }, 2600);
+}
+document.addEventListener('mousemove', function(e){
+if(!editing) return;
+var t = e.target.closest ? e.target.closest('[data-k]') : null;
+document.querySelectorAll('.hov').forEach(function(x){ if(x !== t) x.classList.remove('hov'); });
+if(t && !t.isContentEditable) t.classList.add('hov');
+});
+document.addEventListener('click', function(e){
+if(!editing) return;
+if(e.target.closest('#etool,#emenu,#ebar,#epan,.nchip')) return;
+var t = e.target.closest('main [data-k]');
+if(!t){ deselect(); return; }
+if(t.isContentEditable) return;
+e.preventDefault(); e.stopPropagation();
+select(t);
+}, true);
+function select(el){
+if(sel) sel.classList.remove('sel');
+sel = el; el.classList.add('sel');
+var r = el.getBoundingClientRect();
+var tb = document.getElementById('etool');
+var canText = el.matches(TEXTSEL);
+tb.innerHTML =
+(canText ? '<button data-a="edit" title="Modifica il testo">' + ic('pencil') + '</button>' : '') +
+'<button data-a="add" title="Aggiungi qui sotto">' + ic('plus') + '</button>' +
+'<button data-a="note" title="Lascia una nota">' + ic('message') + '</button>' +
+'<button data-a="flag" title="Contrassegna">' + ic('flag') + '</button>' +
+'<span class="sep"></span>' +
+'<button data-a="up" title="Seleziona il blocco che lo contiene">' + ic('arrowup') + '</button>' +
+'<button data-a="del" class="dang" title="' + (el.matches('td,th') ? 'Togli tutta la riga' : 'Togli dal documento') + '">' + ic('x') + '</button>';
+tb.classList.add('show');
+tb.style.top = (window.scrollY + r.top - tb.offsetHeight - 8) + 'px';
+tb.style.left = Math.max(10, window.scrollX + r.left) + 'px';
+if(r.top < 60){ tb.style.top = (window.scrollY + r.bottom + 8) + 'px'; }
+}
+function deselect(){
+if(sel) sel.classList.remove('sel');
+sel = null;
+document.getElementById('etool').classList.remove('show');
+document.getElementById('emenu').classList.remove('show');
+}
+document.getElementById('etool').addEventListener('click', function(e){
+var b = e.target.closest('button'); if(!b || !sel) return;
+var a = b.dataset.a, el = sel;
+if(a === 'edit'){
+document.getElementById('etool').classList.remove('show');
+el.classList.remove('sel','hov');
+el.setAttribute('contenteditable','true'); el.focus();
+var before = el.innerHTML;
+var fin = function(){
+el.removeAttribute('contenteditable');
+el.removeEventListener('blur', fin);
+if(el.innerHTML !== before){ saveEdit(el.dataset.k, {html: el.innerHTML}); toast('Modifica salvata'); }
+sel = null;
+};
+el.addEventListener('blur', fin);
+el.addEventListener('keydown', function(k){ if(k.key === 'Escape'){ el.blur(); } });
+}
+else if(a === 'del'){
+if(el.matches('td,th')){ var tr = el.closest('tr'); if(tr && tr.dataset.k) el = tr; }
+saveEdit(el.dataset.k, {hidden:true});
+removed.push({k:el.dataset.k, txt:(el.textContent||'').trim().slice(0,110), tag:el.tagName});
+el.remove(); deselect(); bar(); syncNav(); toast('Tolto. Lo ritrovi in «Note e rimossi»');
+window.dispatchEvent(new Event('nodo:changed'));
+}
+else if(a === 'flag'){
+var order = ['', 'rev', 'ok', 'dis', 'cut'];
+var cur = (S.edits[el.dataset.k] || {}).flag || '';
+var nx = order[(order.indexOf(cur) + 1) % order.length];
+order.forEach(function(f){ if(f) el.classList.remove('fl-' + f); });
+if(nx) el.classList.add('fl-' + nx);
+saveEdit(el.dataset.k, {flag: nx});
+toast({'':'Contrassegno tolto','rev':'Da rivedere','ok':'Approvato','dis':'Da discutere','cut':'Proposto per la rimozione'}[nx]);
+}
+else if(a === 'note'){
+var who = author(); if(!who) return;
+var txt = window.prompt('Nota su questo punto'); if(!txt) return;
+var id = Store.nid(), n = {k:el.dataset.k, text:txt, by:who, ts:Date.now()};
+S.notes[id] = n; Store.put('notes', id, n); paintNote(id, n); bar(); deselect();
+}
+else if(a === 'up'){
+var p = el.parentElement ? el.parentElement.closest('main [data-k]') : null;
+if(p) select(p); else toast('Sei già al livello più alto');
+}
+else if(a === 'add'){ addMenu(el, b); }
+});
+function addMenu(el, btn){
+var m = document.getElementById('emenu'), items = [];
+if(el.closest('ul,ol')) items.push(['li','Punto elenco','check']);
+if(el.closest('table')) items.push(['tr','Riga di tabella','grid']);
+if(el.closest('.steps')) items.push(['step','Passo del flusso','route']);
+items.push(['p','Paragrafo','text']);
+items.push(['h4','Sottotitolo','pin']);
+items.push(['ul','Elenco puntato','check']);
+items.push(['card','Riquadro','box']);
+items.push(['cardq','Riquadro in evidenza','target']);
+items.push(['cardw','Riquadro di attenzione','alert']);
+items.push(['us','Storia utente','book']);
+items.push(['tbl','Tabella','grid']);
+if(el.closest('#p4') || el.closest('.role')) items.push(['role','Scheda di un ruolo','user']);
+items.push(['section','Nuova sezione in fondo','plus']);
+m.innerHTML = '<div class="mh">Aggiungi qui sotto</div>' + items.map(function(i){
+return '<button data-k="' + i[0] + '">' + ic(i[2]) + i[1] + '</button>';
+}).join('');
+var r = btn.getBoundingClientRect();
+m.style.top = (window.scrollY + r.bottom + 6) + 'px';
+m.style.left = Math.max(10, Math.min(window.scrollX + r.left - 60, window.innerWidth - 200)) + 'px';
+m.classList.add('show');
+}
+document.getElementById('emenu').addEventListener('click', function(e){
+var b = e.target.closest('button'); if(!b || !sel) return;
+insert(b.dataset.k, sel);
+document.getElementById('emenu').classList.remove('show');
+});
+function tpl(kind, el){
+switch(kind){
+case 'li': return '<li>Nuovo punto</li>';
+case 'tr':
+var t = el.closest('table'), n = (t && t.rows[0]) ? t.rows[0].cells.length : 2, o = '<tr>';
+while(n--) o += '<td>—</td>';
+return o + '</tr>';
+case 'step': return '<div class="step usr"><div class="sh">Nuovo passo</div><div class="sb">Che cosa succede in questo passo.</div></div>';
+case 'p': return '<p>Nuovo paragrafo.</p>';
+case 'h4': return '<h4>Nuovo sottotitolo</h4>';
+case 'ul': return '<ul><li>Primo punto</li><li>Secondo punto</li></ul>';
+case 'card': return '<div class="card"><b>Titolo del riquadro</b><p>Testo del riquadro.</p></div>';
+case 'cardq': return '<div class="card q"><b>Titolo</b><p>Il punto importante.</p></div>';
+case 'cardw': return '<div class="card w"><b>Attenzione</b><p>Che cosa può andare storto.</p></div>';
+case 'us': return '<div class="us"><div class="id">US-NEW-01</div><div class="t">Titolo della storia</div><p style="font-size:13.4px;margin:0">Come [ruolo] voglio [cosa] così da [perché].</p><div class="ac"><div><span>Dato</span><span>la situazione di partenza</span></div><div><span>Quando</span><span>l\'azione della persona</span></div><div><span>Allora</span><span>il risultato atteso</span></div></div></div>';
+case 'tbl': return '<div class="tw"><table><tr><th>Colonna</th><th>Colonna</th></tr><tr><td>—</td><td>—</td></tr></table></div>';
+case 'role': return '<div class="role" id="r-new' + Date.now().toString(36) + '"><div class="rhead"><div class="rn">Nuovo ruolo <span class="p">Reparto</span></div><div class="rd">Una riga che dice chi è e che cosa fa.</div></div><div class="rbody"><h4>Che cosa vede aprendo Nodo</h4><ul><li>Prima vista</li></ul><h4>Che cosa può fare</h4><ul><li>Prima azione</li></ul><h4>Che cosa non può fare</h4><ul class="no"><li>Primo divieto</li></ul></div></div>';
+case 'section': return '<section id="p' + Date.now().toString(36) + '"><div class="kick">Nuova parte</div><h2>Titolo della sezione</h2><p class="lead">Di che cosa parla questa sezione.</p></section>';
+}
+return '<p>Nuovo testo.</p>';
+}
+function insert(kind, el){
+var html = tpl(kind, el);
+var anchorEl = el;
+if(kind === 'li') anchorEl = el.closest('li') || el.closest('ul,ol').lastElementChild;
+else if(kind === 'tr') anchorEl = el.closest('tr');
+else if(kind === 'step') anchorEl = el.closest('.step') || el.closest('.steps').lastElementChild;
+else if(kind === 'section') anchorEl = document.querySelector('main section:last-of-type');
+else anchorEl = el.closest('p,h3,h4,.card,.us,.tw,.steps,.role,ul,ol,table,section') || el;
+if(!anchorEl || !anchorEl.dataset.k){ anchorEl = el; }
+var id = Store.nid();
+var rec = {anchor: anchorEl.dataset.k, kind: kind, html: html, ts: Date.now()};
+S.added[id] = rec; Store.put('added', id, rec);
+var tmp = document.createElement('div'), node;
+if(kind === 'li'){ tmp.innerHTML = '<ul>' + html + '</ul>'; node = tmp.querySelector('li'); }
+else if(kind === 'tr'){ tmp.innerHTML = '<table><tbody>' + html + '</tbody></table>'; node = tmp.querySelector('tr'); }
+else { tmp.innerHTML = html; node = tmp.firstElementChild; }
+node.dataset.k = id;
+anchorEl.insertAdjacentElement('afterend', node);
+subKeys(node, id);
+decorate(node.parentElement);
+deselect(); syncNav();
+node.scrollIntoView({block:'center', behavior:'smooth'});
+toast('Aggiunto. Tocca il testo per modificarlo');
+window.dispatchEvent(new Event('nodo:changed'));
+}
+function panel(){
+var p = document.getElementById('epan'), h = '';
+h += '<h5>Note</h5><div class="sub">Commenti lasciati sui punti del documento</div>';
+var ks = Object.keys(S.notes);
+if(!ks.length) h += '<div class="empty">Ancora nessuna nota.</div>';
+ks.forEach(function(id){
+var n = S.notes[id];
+h += '<div class="row"><span><b>' + esc(n.by) + ':</b> ' + esc(n.text) + '</span><button data-go="' + id + '">vai</button></div>';
+});
+h += '<h5 style="margin-top:16px">Tolti dal documento</h5><div class="sub">Puoi rimetterli quando vuoi</div>';
+if(!removed.length) h += '<div class="empty">Niente rimosso.</div>';
+removed.forEach(function(r){
+h += '<div class="row"><span>' + esc(r.txt || r.tag) + '</span><button data-res="' + esc(r.k) + '">rimetti</button></div>';
+});
+h += '<div class="foot"><button id="rAll">Ripristina tutto</button><button id="rName">Cambia il tuo nome</button></div>';
+h += '<div class="sub" style="margin:10px 0 0">' + (Store.mode === 'db' ? 'Le modifiche sono condivise con chi apre questo documento.' : 'Le modifiche restano su questo computer, in questo browser.') + '</div>';
+p.innerHTML = h;
+p.querySelectorAll('[data-go]').forEach(function(b){ b.onclick = function(){ var e = document.getElementById('note-' + b.dataset.go); if(e) e.scrollIntoView({block:'center', behavior:'smooth'}); }; });
+p.querySelectorAll('[data-res]').forEach(function(b){ b.onclick = function(){ restore(b.dataset.res); }; });
+p.querySelector('#rAll').onclick = function(){
+if(!window.confirm('Rimettere tutto come era, perdendo modifiche, aggiunte e note?')) return;
+['edits','added','notes'].forEach(function(c){
+var o = S[c === 'edits' ? 'edits' : c];
+Object.keys(o).forEach(function(k){ Store.del(c, k); });
+});
+try { localStorage.removeItem(NS+':edits'); localStorage.removeItem(NS+':added'); localStorage.removeItem(NS+':notes'); } catch(e){}
+location.reload();
+};
+p.querySelector('#rName').onclick = function(){ author(true); panel(); };
+}
+function restore(k){
+var d = S.edits[k] || {}; delete d.hidden;
+S.edits[k] = d; Store.put('edits', k, d);
+removed = removed.filter(function(r){ return r.k !== k; });
+toast('Ripristinato: ricarico la pagina');
+setTimeout(function(){ location.reload(); }, 700);
+}
+function syncNav(){
+var nav = document.querySelector('.nav');
+document.querySelectorAll('main section[id]').forEach(function(s){
+if(nav.querySelector('a[href="#' + s.id + '"]')) return;
+var h2 = s.querySelector('h2');
+var a = document.createElement('a');
+a.href = '#' + s.id; a.textContent = h2 ? h2.textContent.trim() : s.id;
+nav.appendChild(a);
+});
+nav.querySelectorAll('a').forEach(function(a){
+var hr=a.getAttribute("href")||"";
+if(hr.charAt(0)!=="#") return;
+var t = document.querySelector(hr);
+a.style.display = t ? "" : "none";
+});
+}
+function download(){
+var c = document.documentElement.cloneNode(true);
+['#etool','#emenu','#epan','#ebar','#ehint','#ed-js'].forEach(function(s){ var e = c.querySelector(s); if(e) e.remove(); });
+c.querySelectorAll('.hov,.sel').forEach(function(e){ e.classList.remove('hov','sel'); });
+c.querySelectorAll('[contenteditable]').forEach(function(e){ e.removeAttribute('contenteditable'); });
+c.querySelectorAll('.nchip .nx').forEach(function(e){ e.remove(); });
+var head = c.querySelector('head');
+head.insertAdjacentHTML('afterbegin', '<meta name="nodo-export" content="1">');
+var blob = new Blob(['<!DOCTYPE html>\n' + c.outerHTML], {type:'text/html'});
+var name = 'nodo-' + (document.body.dataset.part || 'documento-di-prodotto') + '-' + new Date().toISOString().slice(0,10) + '.html';
+if(window.claude && window.claude.use){
+Promise.resolve(window.claude.use('downloads')).then(function(d){
+if(!d) throw 0;
+return d.save({filename:name, data:blob}).then(function(r){
+toast(r && r.status === 'saved' ? 'Copia salvata con le tue modifiche' : 'Copia consegnata');
+});
+}).catch(function(e){
+if(e && e.code === 'cancelled') return;
+toast('Salvataggio non disponibile qui');
+});
+return;
+}
+var a = document.createElement('a');
+a.href = URL.createObjectURL(blob);
+a.download = name;
+a.click();
+setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+toast('Copia scaricata con le tue modifiche');
+}
+document.addEventListener('keydown', function(e){
+if(e.key === 'Escape'){ deselect(); document.getElementById('epan').classList.remove('show'); }
+if((e.key === 'e' || e.key === 'E') && (e.metaKey || e.ctrlKey)){ e.preventDefault(); setEditing(!editing); }
+});
+window.addEventListener('resize', deselect);
+window.addEventListener('scroll', function(){ if(sel && !sel.isContentEditable && sel.isConnected) select(sel); }, {passive:true});
+assignKeys();
+decorate();
+bar();
+if(BAKED){ syncNav(); }
+else {
+Store.init().then(function(){
+return Promise.all([Store.all('edits'), Store.all('added'), Store.all('notes')]);
+}).then(function(r){
+S.edits = r[0] || {}; S.added = r[1] || {}; S.notes = r[2] || {};
+applyAll(); bar();
+window.dispatchEvent(new Event('nodo:changed'));
+}).catch(function(){ syncNav(); });
+}
+})();
+</script>
+</body>
+</html>
